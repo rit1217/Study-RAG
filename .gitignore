@@ -17,7 +17,7 @@ node_modules/
 package-lock.json
 
 # Data & Storage
-/documents
+/docs
 /chroma
 
 # Claude Code

@@ -72,7 +72,7 @@ class LegalRAGClient:
             print(f"  - {doc.display_name} [{doc.name}]")
         return docs
 
-    def store_file(self, file_name, file_search_store_name, file_path="./documents/KKP/LNC", metadata=None):
+    def store_file(self, file_name, file_search_store_name, file_path="./docs/KKP/LNC", metadata=None):
         """Upload a file to a Gemini File Search store.
 
         Args:
