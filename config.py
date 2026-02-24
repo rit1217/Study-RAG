@@ -9,3 +9,9 @@ EVAL_AI_PROMPT_VERSION = "v02"
 TEST_CASE_PATH  = "docs/KKP/LNC/test_cases/"
 
 EVAL_PROJECT_PREFIX = "KKP Legal Gemini RAG Evaluation"
+
+
+EVAL_RESULTS_ROOT_PATH = "docs/KKP/LNC/eval_results/"
+
+REVIEW_AI_MODEL = "gemini-3-pro-preview"
+REVIEW_AI_PROMPT_VERSION = "v01"
