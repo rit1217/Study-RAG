@@ -19,6 +19,7 @@ package-lock.json
 # Data & Storage
 /docs
 /chroma
+/documents
 
 # Claude Code
 .claude/
