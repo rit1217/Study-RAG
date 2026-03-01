@@ -7,5 +7,6 @@ EVAL_AI_MODEL = "gemini-3-pro-preview"
 EVAL_AI_PROMPT_VERSION = "v02"
 
 TEST_CASE_PATH  = "documents/KKP/test_cases/"
-
+DOCUMENT_PATH = "documents/KKP/LNC/"
+ 
 EVAL_PROJECT_PREFIX = "KKP Legal Gemini RAG Evaluation"
