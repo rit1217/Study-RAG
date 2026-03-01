@@ -30,3 +30,5 @@ _bmad-output
 
 # Jupyter checkpoints
 .ipynb_checkpoints/
+
+.github
