@@ -10,7 +10,7 @@ reviewer_agent = Agent(
     model=AGENTIC_AI_MODEL,
     description="ตรวจสอบคุณภาพความเห็นทางกฎหมายและให้คะแนนความมั่นใจ",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "reviewer_agent",
         "reviewer_agent", AGENTIC_AI_PROMPT_VERSION,
     ),
     output_key="review_result",

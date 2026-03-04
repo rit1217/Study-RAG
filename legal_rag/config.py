@@ -10,5 +10,5 @@ DEFAULT_FILE_STORES = [
 ]
 
 # Agentic AI Configuration
-AGENTIC_AI_MODEL = "gemini-2.0-flash"
+AGENTIC_AI_MODEL = "gemini-3.1-flash-lite"
 AGENTIC_AI_PROMPT_VERSION = "v01"

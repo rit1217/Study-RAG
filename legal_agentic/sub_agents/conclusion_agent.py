@@ -10,7 +10,7 @@ conclusion_agent = Agent(
     model=AGENTIC_AI_MODEL,
     description="จัดทำข้อสรุปและข้อเสนอแนะที่เป็นรูปธรรมสำหรับธนาคาร",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "conclusion_agent",
         "conclusion_agent", AGENTIC_AI_PROMPT_VERSION,
     ),
     output_key="conclusion",

@@ -10,7 +10,7 @@ synthesizer_agent = Agent(
     model=AGENTIC_AI_MODEL,
     description="รวบรวมและจัดลำดับความสำคัญของตัวบทกฎหมายจากแหล่งข้อมูลทั่วไปและเฉพาะ",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "synthesizer_agent",
         "synthesizer_agent", AGENTIC_AI_PROMPT_VERSION,
     ),
     output_key="synthesized_law",

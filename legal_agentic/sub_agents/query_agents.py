@@ -15,7 +15,7 @@ sc_query_agent = Agent(
     model=AGENTIC_AI_MODEL,
     description="ค้นหาคำพิพากษาศาลฎีกาที่เกี่ยวข้องกับคำถามทางกฎหมาย",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "sc_query_agent",
         "sc_query_agent", AGENTIC_AI_PROMPT_VERSION,
     ),
     tools=[search_supreme_court],
@@ -27,7 +27,7 @@ general_law_query_agent = Agent(
     model=AGENTIC_AI_MODEL,
     description="ค้นหาตัวบทกฎหมายทั่วไป เช่น ประมวลกฎหมายแพ่งและพาณิชย์ พ.ร.บ.ล้มละลาย พ.ร.บ.หลักประกันทางธุรกิจ",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "general_law_query_agent",
         "general_law_query_agent", AGENTIC_AI_PROMPT_VERSION,
     ),
     tools=[search_general_law],
@@ -39,7 +39,7 @@ specific_law_query_agent = Agent(
     model=AGENTIC_AI_MODEL,
     description="ค้นหากฎหมายเฉพาะ เช่น พ.ร.บ.บริษัทมหาชนจำกัด ประกาศ สคบ.",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "specific_law_query_agent",
         "specific_law_query_agent", AGENTIC_AI_PROMPT_VERSION,
     ),
     tools=[search_specific_law],

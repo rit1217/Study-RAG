@@ -12,7 +12,7 @@ deposit_specialist = Agent(
     model=AGENTIC_AI_MODEL,
     description="ผู้เชี่ยวชาญด้านกฎหมายเงินฝากและบัญชีธนาคาร",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "deposit_specialist",
         "deposit_specialist", AGENTIC_AI_PROMPT_VERSION,
     ),
 )
@@ -22,7 +22,7 @@ lending_specialist = Agent(
     model=AGENTIC_AI_MODEL,
     description="ผู้เชี่ยวชาญด้านกฎหมายสินเชื่อ ค้ำประกัน และหลักประกัน",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "lending_specialist",
         "lending_specialist", AGENTIC_AI_PROMPT_VERSION,
     ),
 )
@@ -32,7 +32,7 @@ hp_specialist = Agent(
     model=AGENTIC_AI_MODEL,
     description="ผู้เชี่ยวชาญด้านกฎหมายเช่าซื้อและประกาศ สคบ.",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "hp_specialist",
         "hp_specialist", AGENTIC_AI_PROMPT_VERSION,
     ),
 )
@@ -44,7 +44,7 @@ judgement_agent = Agent(
     model=AGENTIC_AI_MODEL,
     description="วินิจฉัยคำถามทางกฎหมายโดยอ้างอิงตัวบทกฎหมายและคำพิพากษาศาลฎีกา",
     instruction=load_prompt(
-        "legal_agentic", AGENTIC_AI_MODEL,
+        "legal_agentic", "judgement_agent",
         "judgement_agent", AGENTIC_AI_PROMPT_VERSION,
     ),
     sub_agents=[deposit_specialist, lending_specialist, hp_specialist],
