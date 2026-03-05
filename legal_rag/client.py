@@ -8,14 +8,14 @@ from skill import load_prompt
 
 
 class LegalRAGClient(RAGClient):
-    def __init__(self, api_key=None, prompts_dir="./skill_archive"):
+    def __init__(self, api_key=None, prompts_dir="./instruction_archive"):
         super().__init__(api_key=api_key, prompts_dir=prompts_dir)
 
     # ── Prompt loading ──────────────────────────────────────────────
-    def load_prompt(self, agent_type, model, name, version="v02"):
+    def load_prompt(self, agent_type, name, version="v02"):
         """Load a prompt template from the prompts directory."""
-        
-        return load_prompt(agent_type, model, name, version, self.prompts_dir)
+
+        return load_prompt(agent_type, name, version, self.prompts_dir)
 
     # ── Query ───────────────────────────────────────────────────────
 
@@ -34,7 +34,7 @@ class LegalRAGClient(RAGClient):
             Tuple of (response object, response text string).
         """
         if prompt_template is None:
-            prompt_template = self.load_prompt("legal_qa", gemini_model, "legal_qa")
+            prompt_template = self.load_prompt("legal_qa", "legal_qa")
 
         def _generate():
             return self.client.models.generate_content(

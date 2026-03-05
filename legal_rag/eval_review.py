@@ -91,7 +91,7 @@ class EvalReviewClient:
         review_model="gemini-3-pro-preview",
         prompt_version="v01",
         eval_prompt_version="v02",
-        prompts_dir="./skill_archive",
+        prompts_dir="./instruction_archive",
     ):
         """Initialize the review client.
 
@@ -259,7 +259,7 @@ class EvalReviewClient:
             Same list with discrepancy_summary populated.
         """
         prompt_template = load_prompt(
-            "eval_review", self.review_model, "discrepancy_summary",
+            "eval_review", "discrepancy_summary",
             self.prompt_version, self.prompts_dir,
         )
 
@@ -330,7 +330,7 @@ class EvalReviewClient:
         )
 
         prompt_template = load_prompt(
-            "eval_review", self.review_model, "score_analysis",
+            "eval_review", "score_analysis",
             self.prompt_version, self.prompts_dir,
         )
 
@@ -360,7 +360,7 @@ class EvalReviewClient:
         # Load current scorer prompt
         prompt_file_name = SCORER_PROMPT_NAMES[scorer_name]
         current_prompt = load_prompt(
-            "eval_scorer", self.eval_model, prompt_file_name,
+            "eval_scorer", prompt_file_name,
             self.eval_prompt_version, self.prompts_dir,
         )
 
@@ -385,7 +385,7 @@ class EvalReviewClient:
             )
 
         prompt_template = load_prompt(
-            "eval_review", self.review_model, "prompt_improvement",
+            "eval_review", "prompt_improvement",
             self.prompt_version, self.prompts_dir,
         )
 

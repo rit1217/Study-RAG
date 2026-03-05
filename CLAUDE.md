@@ -8,54 +8,89 @@ A RAG (Retrieval-Augmented Generation) project focused on Thai legal document Q&
 
 ## Architecture
 
+### Agentic Pipeline (`legal_agentic/`)
+
+Google ADK-based multi-agent pipeline:
+
+```
+LoopAgent (max 3)
+└─ SequentialAgent
+    ├─ query_agents (ParallelAgent)
+    │   ├─ sc_query_agent → sc_results
+    │   └─ law_query_agent → synthesized_law
+    ├─ judgement_agent → judgement (with specialist SkillToolset)
+    ├─ conclusion_agent → conclusion
+    └─ reviewer_agent → review_result
+```
+
+- **`agent.py`** — Root agent: `LoopAgent` wrapping `SequentialAgent` pipeline
+- **`sub_agents/query_agents.py`** — `ParallelAgent` with SC query + Law query (searches both general and specific law)
+- **`sub_agents/judgement_agent.py`** — Legal judgement with auto-discovered specialist skills via ADK `SkillToolset`
+- **`sub_agents/conclusion_agent.py`** — Conclusion & recommendations
+- **`sub_agents/reviewer_agent.py`** — Quality control scorer (PASS/FAIL controls loop retry)
+- **`tools.py`** — Gemini File Search wrappers: `search_general_law`, `search_specific_law`, `search_supreme_court`
+
 ### Notebooks
 
-- **`gemini_file_search_local.ipynb`** — Local development version. Main notebook for running RAG queries and evaluations. Uses `os.getenv("GEMINI_API_KEY")` and local `./docs/` directory.
-- **`gemini_file_search_cloud.ipynb`** — Original Colab-based notebook. Uses Google Drive for file storage and Colab's `userdata` for secrets.
-- **`feedback_review.ipynb`** — Eval scorer review notebook. Loads eval results from a version folder, re-runs each scorer independently (reference, judgement, suggestion), compares against human scores, and suggests prompt improvements.
-- **`maf_legal.ipynb`** — MAF (Mutually Assured Feedback) legal analysis utility notebook.
+- **`gemini_file_search_local.ipynb`** — Local development. Main notebook for running RAG queries and evaluations.
+- **`gemini_file_search_cloud.ipynb`** — Original Colab-based notebook.
+- **`feedback_review.ipynb`** — Eval scorer review. Re-runs scorers, compares against human scores, suggests prompt improvements.
+- **`eval_review_agentic.ipynb`** — Agentic eval review with automated pipeline.
+- **`agentic_maf_legal.ipynb`** — MAF (Mutually Assured Feedback) legal analysis.
 
-### RAG Pipeline (gemini_file_search notebooks)
+### Python Modules
 
-1. **Gemini client init** → Create/select File Search Stores via `LegalRAGClient`
-2. **Document upload** → Upload PDFs with metadata (law type, name, year) to Gemini File Search Stores
-3. **Query** → `rag.ask()` sends a structured Thai legal prompt requiring 3-part answers (relevant statutes, judgement, conclusion/recommendations)
-4. **Evaluation** → Braintrust `Eval` with custom LLM-based scorers
-
-### Eval Review Pipeline (feedback_review notebook)
-
-1. **Load eval results** → `EvalReviewClient.load_eval_folder()` reads all JSON files from `eval_results/eval_scorer_{version}/`
-2. **Compare scores** → Show human vs auto scores side-by-side (skip entries with `None` human scores)
-3. **Per-scorer review** (reference, judgement, suggestion independently):
-   - Re-run scorer via `autoevals.LLMClassifier` → get score + rationale + choice
-   - Compare re-run scores vs human scores
-   - Summarize discrepancies (human feedback vs auto rationale)
-   - Suggest improved scorer prompt for the next version
-
-### Python Modules (`legal_rag/`)
+#### `legal_rag/` — RAG Client & Eval
 
 - **`client.py`** — `LegalRAGClient`: Core RAG client wrapping Gemini File Search API. Key method: `ask(question, file_store_name_list, ...)` returns `(response, response_text)` with grounding citations.
 - **`eval.py`** — Scorer factory functions using `autoevals.LLMClassifier`: `create_legal_reference_scorer`, `create_legal_judgement_scorer`, `create_legal_suggestion_scorer`, plus similarity/distance/factuality scorers.
-- **`eval_review.py`** — `EvalReviewClient`: Loads eval results, re-runs scorers with rationale capture, compares human vs auto scores, analyzes discrepancies, and suggests prompt improvements.
-- **`config.py`** — Pre-configured Gemini File Search Store IDs (General Law, Public Company Law, Supreme Court Statements).
+- **`eval_review.py`** — `EvalReviewClient`: Loads eval results, re-runs scorers, compares human vs auto scores, analyzes discrepancies, suggests prompt improvements.
+- **`config.py`** — Pre-configured Gemini File Search Store IDs.
 
-### Skills (`skill.py` + `.claude/skills/`)
+#### `rag_agent/` — Base Client
 
-- **`skill.py`** (project root) — Two loader functions:
-  - `load_skill(group, name)`: Loads current best skill from `.claude/skills/{group}/{name}/SKILL.md` (strips YAML frontmatter).
-  - `load_prompt(agent_type, model, name, version)`: Loads versioned prompts from `skill_archive/` (backward compatibility).
-- **`.claude/skills/legal_agentic/`** — Skills for the agentic pipeline agents (general-law-query, specific-law-query, sc-query, law-synthesizer, legal-judgement, deposit-specialist, lending-specialist, hp-specialist, legal-conclusion, legal-reviewer).
-- **`.claude/skills/legal_rag/`** — Skills for single-agent RAG (legal-qa-flash, legal-qa-pro).
+- **`agent.py`** — `RAGClient`: Base class for Gemini client with file store management.
 
-### Skill Archive (`skill_archive/`)
+#### `skill.py` — Loader Functions
 
-Versioned prompt snapshots, organized as `skill_archive/{agent_type}/{model}/{name}_{version}.md`:
+Three loader functions:
+- `load_instruction(group, name)`: Loads agent instructions from `instructions/{group}/{name}.md`.
+- `load_skill(group, name)`: Loads specialist skills from `.claude/skills/{group}/{name}/SKILL.md` (strips YAML frontmatter). Used by ADK `load_skill_from_dir` for specialist auto-discovery.
+- `load_prompt(agent_type, name, version)`: Loads versioned prompts from `instruction_archive/{agent_type}/{name}_{version}.md`.
 
-- **`legal_qa/`** — System prompts for legal Q&A (instructs 3-part structured answers)
-- **`eval_scorer/`** — LLMClassifier prompts for scoring model outputs (reference, judgement, suggestion, similarity, distance, factuality)
-- **`eval_review/`** — Review prompts (discrepancy_summary, score_analysis, prompt_improvement)
+### Directory Layout
 
-Models: `gemini-3-flash-preview`, `gemini-3-pro-preview`. Versions: `v01`, `v02`, `v03`.
+```
+RAG/
+├── instructions/                    # Agent instructions
+│   ├── legal_agentic/
+│   │   ├── sc-query.md
+│   │   ├── law-query.md             # Merged general+specific+synthesizer
+│   │   ├── legal-judgement.md
+│   │   ├── legal-conclusion.md
+│   │   └── legal-reviewer.md
+│   └── legal_rag/
+│       ├── legal-qa-flash.md
+│       └── legal-qa-pro.md
+├── instruction_archive/             # Versioned prompt snapshots (flat, no model subdirs)
+│   ├── eval_scorer/{name}_{version}.md
+│   ├── eval_review/{name}_{version}.md
+│   ├── legal_qa/{name}_{version}.md
+│   └── legal_agentic/{agent}/{name}_{version}.md
+├── .claude/skills/                  # Only specialist skills (auto-discovered by ADK)
+│   └── legal_agentic/
+│       ├── deposit-specialist/SKILL.md
+│       ├── lending-specialist/SKILL.md
+│       └── hp-specialist/SKILL.md
+├── legal_agentic/                   # ADK agentic pipeline
+│   ├── agent.py                     # Root agent (LoopAgent)
+│   ├── sub_agents/                  # Pipeline agents
+│   └── tools.py                     # Gemini File Search tool functions
+├── legal_rag/                       # RAG client, eval scorers, eval review
+├── rag_agent/                       # Base RAG client
+├── config.py                        # All configuration constants
+└── skill.py                         # load_instruction(), load_skill(), load_prompt()
+```
 
 ### Evaluation Scorers (via `autoevals.LLMClassifier`)
 
@@ -69,8 +104,8 @@ Plus similarity scorers: `gemini_distance`, `gemini_sim`, `gemini_fact`.
 ### Data
 
 - **`docs/KKP/LNC/`** — Legal PDFs and evaluation outputs
-- **`docs/KKP/test_cases/`** — Excel test cases (Deposit, Lending, HP domains) with columns: question, expected statutes, judgement, conclusion
-- **`docs/KKP/LNC/eval_results/eval_scorer_{version}/`** — Braintrust eval result JSONs per model/domain
+- **`docs/KKP/test_cases/`** — Excel test cases (Deposit, Lending, HP domains)
+- **`docs/KKP/LNC/eval_results/eval_scorer_{version}/`** — Braintrust eval result JSONs
 
 ### Configuration (`config.py`)
 
@@ -79,14 +114,15 @@ LEGAL_AI_MODEL          # Model for legal Q&A (e.g. "gemini-3-pro-preview")
 LEGAL_AI_PROMPT_VERSION # Prompt version for Q&A (e.g. "v02")
 LEGAL_AI_TEMP           # Temperature for Q&A generation
 EVAL_AI_MODEL           # Model for eval scorers
-EVAL_AI_PROMPT_VERSION  # Prompt version for scorers — also determines eval_results folder
+EVAL_AI_PROMPT_VERSION  # Prompt version for scorers
 REVIEW_AI_MODEL         # Model for review/analysis
 REVIEW_AI_PROMPT_VERSION # Prompt version for review prompts
 EVAL_RESULTS_ROOT_PATH  # Root path for eval results
 TEST_CASE_PATH          # Path to test case Excel files
 DOCUMENTS_PATH          # Path to legal documents
-SKILLS_DIR              # Path to .claude/skills/ directory
-SKILL_ARCHIVE_DIR       # Path to skill_archive/ directory (versioned prompts)
+SKILLS_DIR              # Path to .claude/skills/ (specialist skills only)
+INSTRUCTION_ARCHIVE_DIR # Path to instruction_archive/ (versioned prompts)
+INSTRUCTIONS_DIR        # Path to instructions/ (agent instructions)
 ```
 
 ## Environment Setup
@@ -101,9 +137,9 @@ Note: `uvloop` and `appnope` in requirements.txt are platform-specific (Linux/ma
 
 ## Key Dependencies
 
+- `google-adk` — Google Agent Development Kit (SkillToolset for specialist skill auto-discovery)
 - `google-genai` — Gemini API client (File Search Stores, content generation)
 - `braintrust` / `autoevals` — Evaluation framework with LLM-based scoring
-- `langchain` / `langgraph` — LLM orchestration framework
 - `pypdf` — PDF processing
 - `pandas` / `openpyxl` — Data manipulation and Excel test case loading
 - `python-dotenv` — Environment variable loading

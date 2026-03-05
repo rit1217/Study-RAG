@@ -26,4 +26,5 @@ AGENTIC_AI_PROMPT_VERSION = "v01"
 
 # Skill and Prompt Archive Paths
 SKILLS_DIR = ".claude/skills"
-SKILL_ARCHIVE_DIR = "skill_archive"
+INSTRUCTION_ARCHIVE_DIR = "instruction_archive"
+INSTRUCTIONS_DIR = "instructions"

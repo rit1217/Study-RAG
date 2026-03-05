@@ -1,43 +1,30 @@
-"""Parallel Query Agents — search all 3 legal document stores simultaneously."""
+"""Parallel Query Agents — SC query + Law query (general & specific) simultaneously."""
 
 from google.adk.agents import Agent, ParallelAgent
 
 from config import AGENTIC_AI_MODEL
-from skill import load_skill
-from legal_agentic.tools import (
-    search_general_law,
-    search_specific_law,
-    search_supreme_court,
-)
+from skill import load_instruction
+from legal_agentic.tools import search_general_law, search_specific_law, search_supreme_court
 
 sc_query_agent = Agent(
     name="sc_query_agent",
     model=AGENTIC_AI_MODEL,
-    description="ค้นหาคำพิพากษาศาลฎีกาที่เกี่ยวข้องกับคำถามทางกฎหมาย",
-    instruction=load_skill("legal_agentic", "sc-query"),
+    description="ค้นหาคำพิพากษาศาลฎีกาที่เกี่ยวข้อง",
+    instruction=load_instruction("legal_agentic", "sc-query"),
     tools=[search_supreme_court],
     output_key="sc_results",
 )
 
-general_law_query_agent = Agent(
-    name="general_law_query_agent",
+law_query_agent = Agent(
+    name="law_query_agent",
     model=AGENTIC_AI_MODEL,
-    description="ค้นหาตัวบทกฎหมายทั่วไป เช่น ประมวลกฎหมายแพ่งและพาณิชย์ พ.ร.บ.ล้มละลาย พ.ร.บ.หลักประกันทางธุรกิจ",
-    instruction=load_skill("legal_agentic", "general-law-query"),
-    tools=[search_general_law],
-    output_key="general_law_results",
-)
-
-specific_law_query_agent = Agent(
-    name="specific_law_query_agent",
-    model=AGENTIC_AI_MODEL,
-    description="ค้นหากฎหมายเฉพาะ เช่น พ.ร.บ.บริษัทมหาชนจำกัด ประกาศ สคบ.",
-    instruction=load_skill("legal_agentic", "specific-law-query"),
-    tools=[search_specific_law],
-    output_key="specific_law_results",
+    description="ค้นหาและรวบรวมตัวบทกฎหมายทั่วไปและเฉพาะ จัดลำดับความสำคัญโดยกฎหมายเฉพาะมาก่อน",
+    instruction=load_instruction("legal_agentic", "law-query"),
+    tools=[search_general_law, search_specific_law],
+    output_key="synthesized_law",
 )
 
 query_agents = ParallelAgent(
     name="query_agents",
-    sub_agents=[sc_query_agent, general_law_query_agent, specific_law_query_agent],
+    sub_agents=[sc_query_agent, law_query_agent],
 )

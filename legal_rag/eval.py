@@ -7,7 +7,7 @@ def create_legal_reference_scorer(model="gemini-3-flash-preview", version="v02")
     return LLMClassifier(
         name="1. Reference",
         model=model,
-        prompt_template=load_prompt("eval_scorer", model, "legal_reference_scorer", version),
+        prompt_template=load_prompt("eval_scorer","legal_reference_scorer", version),
         choice_scores={
             "อ้างอิงมาตรากฎหมายถูกต้องและครอบคลุมตามเฉลย": 1.0,
             "อ้างอิงมาตรากฎหมายไม่ถูกต้อง หรือไม่เกี่ยวข้อง": 0.0,
@@ -22,7 +22,7 @@ def create_legal_judgement_scorer(model="gemini-3-flash-preview", version="v02")
     return LLMClassifier(
         name="2. Judgement",
         model=model,
-        prompt_template=load_prompt("eval_scorer", model, "legal_judgement_scorer", version),
+        prompt_template=load_prompt("eval_scorer","legal_judgement_scorer", version),
         choice_scores={
             "ตอบได้ถูกต้อง ชัดเจน ครอบคลุม": 1.0,
             "ไม่ถูกต้องตามเฉลย": 0.0,
@@ -37,7 +37,7 @@ def create_legal_suggestion_scorer(model="gemini-3-flash-preview", version="v02"
     return LLMClassifier(
         name="3. Conclusion & Suggestion",
         model=model,
-        prompt_template=load_prompt("eval_scorer", model, "legal_suggestion_scorer", version),
+        prompt_template=load_prompt("eval_scorer","legal_suggestion_scorer", version),
         choice_scores={
             "ตอบได้ถูกต้อง ชัดเจน ครอบคลุม ให้ข้อเสนอแนะที่เป็นไปได้จริง": 1.0,
             "ไม่ถูกต้องตามเฉลย": 0.0,
@@ -52,7 +52,7 @@ def create_gemini_distance_scorer(model="gemini-3-flash-preview", version="v02")
     return LLMClassifier(
         name="Gemini Embedding Similarity",
         model=model,
-        prompt_template=load_prompt("eval_scorer", model, "gemini_distance", version),
+        prompt_template=load_prompt("eval_scorer","gemini_distance", version),
         choice_scores={
             "Identical Meaning": 1.0,
             "Minor Deviations": 0.8,
@@ -68,7 +68,7 @@ def create_gemini_sim_scorer(model="gemini-3-flash-preview", version="v02"):
     return LLMClassifier(
         name="Gemini Answer Similarity",
         model=model,
-        prompt_template=load_prompt("eval_scorer", model, "gemini_answer_similarity", version),
+        prompt_template=load_prompt("eval_scorer","gemini_answer_similarity", version),
         choice_scores={
             "Equivalent": 1.0,
             "Mostly Similar": 0.7,
@@ -84,7 +84,7 @@ def create_gemini_fact_scorer(model="gemini-3-flash-preview", version="v02"):
     return LLMClassifier(
         name="Gemini Factuality",
         model=model,
-        prompt_template=load_prompt("eval_scorer", model, "gemini_factuality", version),
+        prompt_template=load_prompt("eval_scorer","gemini_factuality", version),
         choice_scores={
             "A": 0.4,
             "B": 0.6,

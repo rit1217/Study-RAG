@@ -3,12 +3,12 @@
 from google.adk.agents import Agent
 
 from config import AGENTIC_AI_MODEL
-from skill import load_skill
+from skill import load_instruction
 
 reviewer_agent = Agent(
     name="reviewer_agent",
     model=AGENTIC_AI_MODEL,
     description="ตรวจสอบคุณภาพความเห็นทางกฎหมายและให้คะแนนความมั่นใจ",
-    instruction=load_skill("legal_agentic", "legal-reviewer"),
+    instruction=load_instruction("legal_agentic", "legal-reviewer"),
     output_key="review_result",
 )
