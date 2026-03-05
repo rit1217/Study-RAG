@@ -2,7 +2,7 @@
 
 from google.adk.agents import Agent
 
-from legal_rag.config import AGENTIC_AI_MODEL, AGENTIC_AI_PROMPT_VERSION
+from config import AGENTIC_AI_MODEL, AGENTIC_AI_PROMPT_VERSION
 from legal_rag.prompts import load_prompt
 
 synthesizer_agent = Agent(

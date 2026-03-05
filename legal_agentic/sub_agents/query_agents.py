@@ -2,7 +2,7 @@
 
 from google.adk.agents import Agent, ParallelAgent
 
-from legal_rag.config import AGENTIC_AI_MODEL, AGENTIC_AI_PROMPT_VERSION
+from config import AGENTIC_AI_MODEL, AGENTIC_AI_PROMPT_VERSION
 from legal_rag.prompts import load_prompt
 from legal_agentic.tools import (
     search_general_law,

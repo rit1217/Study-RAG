@@ -32,3 +32,6 @@ _bmad-output
 .ipynb_checkpoints/
 
 .github
+
+temp_expect.md
+temp_output.md

@@ -19,3 +19,7 @@ EVAL_RESULTS_ROOT_PATH = "docs/KKP/LNC/eval_results/"
 
 REVIEW_AI_MODEL = "gemini-3-pro-preview"
 REVIEW_AI_PROMPT_VERSION = "v01"
+
+# Agentic AI Configuration
+AGENTIC_AI_MODEL = "gemini-3.1-flash-lite"
+AGENTIC_AI_PROMPT_VERSION = "v01"
