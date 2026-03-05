@@ -2,16 +2,13 @@
 
 from google.adk.agents import Agent
 
-from config import AGENTIC_AI_MODEL, AGENTIC_AI_PROMPT_VERSION
-from legal_rag.prompts import load_prompt
+from config import AGENTIC_AI_MODEL
+from skill import load_skill
 
 reviewer_agent = Agent(
     name="reviewer_agent",
     model=AGENTIC_AI_MODEL,
     description="ตรวจสอบคุณภาพความเห็นทางกฎหมายและให้คะแนนความมั่นใจ",
-    instruction=load_prompt(
-        "legal_agentic", "reviewer_agent",
-        "reviewer_agent", AGENTIC_AI_PROMPT_VERSION,
-    ),
+    instruction=load_skill("legal_agentic", "legal-reviewer"),
     output_key="review_result",
 )

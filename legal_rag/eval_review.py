@@ -11,7 +11,7 @@ from legal_rag.eval import (
     create_legal_judgement_scorer,
     create_legal_suggestion_scorer,
 )
-from legal_rag.prompts import load_prompt
+from skill import load_prompt
 
 
 # ── Data classes ─────────────────────────────────────────────
@@ -91,7 +91,7 @@ class EvalReviewClient:
         review_model="gemini-3-pro-preview",
         prompt_version="v01",
         eval_prompt_version="v02",
-        prompts_dir="./prompts",
+        prompts_dir="./skill_archive",
     ):
         """Initialize the review client.
 

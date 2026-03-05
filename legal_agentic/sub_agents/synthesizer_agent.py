@@ -2,16 +2,13 @@
 
 from google.adk.agents import Agent
 
-from config import AGENTIC_AI_MODEL, AGENTIC_AI_PROMPT_VERSION
-from legal_rag.prompts import load_prompt
+from config import AGENTIC_AI_MODEL
+from skill import load_skill
 
 synthesizer_agent = Agent(
     name="synthesizer_agent",
     model=AGENTIC_AI_MODEL,
     description="รวบรวมและจัดลำดับความสำคัญของตัวบทกฎหมายจากแหล่งข้อมูลทั่วไปและเฉพาะ",
-    instruction=load_prompt(
-        "legal_agentic", "synthesizer_agent",
-        "synthesizer_agent", AGENTIC_AI_PROMPT_VERSION,
-    ),
+    instruction=load_skill("legal_agentic", "law-synthesizer"),
     output_key="synthesized_law",
 )

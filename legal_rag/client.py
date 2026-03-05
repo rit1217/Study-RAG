@@ -4,11 +4,11 @@ from google import genai
 from google.genai import types
 
 from rag_agent import RAGClient
-from legal_rag.prompts import load_prompt
+from skill import load_prompt
 
 
 class LegalRAGClient(RAGClient):
-    def __init__(self, api_key=None, prompts_dir="./prompts"):
+    def __init__(self, api_key=None, prompts_dir="./skill_archive"):
         super().__init__(api_key=api_key, prompts_dir=prompts_dir)
 
     # ── Prompt loading ──────────────────────────────────────────────

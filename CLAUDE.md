@@ -37,12 +37,19 @@ A RAG (Retrieval-Augmented Generation) project focused on Thai legal document Q&
 - **`client.py`** — `LegalRAGClient`: Core RAG client wrapping Gemini File Search API. Key method: `ask(question, file_store_name_list, ...)` returns `(response, response_text)` with grounding citations.
 - **`eval.py`** — Scorer factory functions using `autoevals.LLMClassifier`: `create_legal_reference_scorer`, `create_legal_judgement_scorer`, `create_legal_suggestion_scorer`, plus similarity/distance/factuality scorers.
 - **`eval_review.py`** — `EvalReviewClient`: Loads eval results, re-runs scorers with rationale capture, compares human vs auto scores, analyzes discrepancies, and suggests prompt improvements.
-- **`prompts.py`** — `load_prompt(agent_type, model, name, version)`: Loads prompt templates from `prompts/{agent_type}/{model}/{name}_{version}.md`.
 - **`config.py`** — Pre-configured Gemini File Search Store IDs (General Law, Public Company Law, Supreme Court Statements).
 
-### Prompts Directory (`prompts/`)
+### Skills (`skill.py` + `.claude/skills/`)
 
-Organized as `prompts/{agent_type}/{model}/{name}_{version}.md`:
+- **`skill.py`** (project root) — Two loader functions:
+  - `load_skill(group, name)`: Loads current best skill from `.claude/skills/{group}/{name}/SKILL.md` (strips YAML frontmatter).
+  - `load_prompt(agent_type, model, name, version)`: Loads versioned prompts from `skill_archive/` (backward compatibility).
+- **`.claude/skills/legal_agentic/`** — Skills for the agentic pipeline agents (general-law-query, specific-law-query, sc-query, law-synthesizer, legal-judgement, deposit-specialist, lending-specialist, hp-specialist, legal-conclusion, legal-reviewer).
+- **`.claude/skills/legal_rag/`** — Skills for single-agent RAG (legal-qa-flash, legal-qa-pro).
+
+### Skill Archive (`skill_archive/`)
+
+Versioned prompt snapshots, organized as `skill_archive/{agent_type}/{model}/{name}_{version}.md`:
 
 - **`legal_qa/`** — System prompts for legal Q&A (instructs 3-part structured answers)
 - **`eval_scorer/`** — LLMClassifier prompts for scoring model outputs (reference, judgement, suggestion, similarity, distance, factuality)
@@ -78,6 +85,8 @@ REVIEW_AI_PROMPT_VERSION # Prompt version for review prompts
 EVAL_RESULTS_ROOT_PATH  # Root path for eval results
 TEST_CASE_PATH          # Path to test case Excel files
 DOCUMENTS_PATH          # Path to legal documents
+SKILLS_DIR              # Path to .claude/skills/ directory
+SKILL_ARCHIVE_DIR       # Path to skill_archive/ directory (versioned prompts)
 ```
 
 ## Environment Setup

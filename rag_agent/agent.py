@@ -6,7 +6,7 @@ import os
 
 class RAGClient:
     """Gemini-based Legal RAG client wrapping file stores, document management, and queries."""
-    def __init__(self, api_key=None, prompts_dir="./prompts"):
+    def __init__(self, api_key=None, prompts_dir="./skill_archive"):
         """Initialize the client.
 
         Args:

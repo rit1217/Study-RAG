@@ -2,16 +2,13 @@
 
 from google.adk.agents import Agent
 
-from config import AGENTIC_AI_MODEL, AGENTIC_AI_PROMPT_VERSION
-from legal_rag.prompts import load_prompt
+from config import AGENTIC_AI_MODEL
+from skill import load_skill
 
 conclusion_agent = Agent(
     name="conclusion_agent",
     model=AGENTIC_AI_MODEL,
     description="จัดทำข้อสรุปและข้อเสนอแนะที่เป็นรูปธรรมสำหรับธนาคาร",
-    instruction=load_prompt(
-        "legal_agentic", "conclusion_agent",
-        "conclusion_agent", AGENTIC_AI_PROMPT_VERSION,
-    ),
+    instruction=load_skill("legal_agentic", "legal-conclusion"),
     output_key="conclusion",
 )

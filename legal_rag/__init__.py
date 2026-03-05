@@ -1,9 +1,10 @@
 from legal_rag.client import LegalRAGClient
 from legal_rag.eval_review import EvalReviewClient
-from legal_rag.prompts import load_prompt
+from skill import load_prompt, load_skill
 
 __all__ = [
     "LegalRAGClient",
     "EvalReviewClient",
     "load_prompt",
+    "load_skill",
 ]

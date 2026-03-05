@@ -23,3 +23,7 @@ REVIEW_AI_PROMPT_VERSION = "v01"
 # Agentic AI Configuration
 AGENTIC_AI_MODEL = "gemini-3.1-flash-lite"
 AGENTIC_AI_PROMPT_VERSION = "v01"
+
+# Skill and Prompt Archive Paths
+SKILLS_DIR = ".claude/skills"
+SKILL_ARCHIVE_DIR = "skill_archive"

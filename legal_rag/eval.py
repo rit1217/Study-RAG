@@ -1,6 +1,6 @@
 from autoevals import LLMClassifier
 
-from legal_rag.prompts import load_prompt
+from skill import load_prompt
 
 
 def create_legal_reference_scorer(model="gemini-3-flash-preview", version="v02"):
