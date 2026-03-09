@@ -5,7 +5,7 @@ import os
 from google import genai
 from google.genai import types
 
-from legal_rag.config import (
+from ..config import (
     GENERAL_LAW_FILE_STORE,
     SPECIFIC_LAW_FILE_STORE,
     SUPREME_COURT_STATEMENT_FILE_STORE,
@@ -13,7 +13,7 @@ from legal_rag.config import (
 
 _client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-3-flash-preview"
 
 
 def _search_file_store(query: str, file_store_name: str) -> dict:

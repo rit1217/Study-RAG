@@ -6,11 +6,11 @@ Loop: Retry if Reviewer confidence < 80%, max 3 iterations.
 
 from google.adk.agents import SequentialAgent, LoopAgent
 
-from legal_agentic.sub_agents.query_agents import query_agents
-from legal_agentic.sub_agents.judgement_agent import judgement_agent
-from legal_agentic.sub_agents.conclusion_agent import conclusion_agent
-from legal_agentic.sub_agents.reviewer_agent import reviewer_agent
-
+from .sub_agents.query_agents.query_agents import query_agents
+from .sub_agents.judgement_agent.judgement_agent import judgement_agent
+from .sub_agents.conclusion_agent.conclusion_agent import conclusion_agent
+from .sub_agents.reviewer_agent.reviewer_agent import reviewer_agent
+    
 # Sequential pipeline: query all stores → judge → conclude → review
 legal_pipeline = SequentialAgent(
     name="legal_pipeline",

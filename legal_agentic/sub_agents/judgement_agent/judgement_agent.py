@@ -1,3 +1,16 @@
+"""Judgement Agent — produces legal judgement using specialist skills as tools.
+
+Specialist skills are auto-discovered from sub_agents/skills/*-specialist/
+directories. Adding a new specialist requires only creating a SKILL.md file.
+"""
+
+from google.adk.agents import Agent
+from google.adk.skills import load_skill_from_dir
+from google.adk.tools import skill_toolset
+
+from ..config import AGENTIC_AI_MODEL, SKILLS_DIR
+
+JUDGEMENT_INSTRUCTION = """\
 # Judgement Agent
 
 คุณเป็นผู้เชี่ยวชาญทางกฎหมายอาวุโสของธนาคาร ทำหน้าที่วินิจฉัยคำถามทางกฎหมาย
@@ -24,4 +37,26 @@
 ## Pipeline Position
 Receives: `synthesized_law` (from law_query_agent), `sc_results` (from sc_query)
 Uses: specialist skills (via SkillToolset, auto-discovered from `*-specialist` directories)
-Produces: `judgement`
+Produces: `judgement`"""
+
+# ── Auto-discover specialist skills ──────────────────────────────────
+
+skills_dir = SKILLS_DIR
+specialist_skills = [
+    load_skill_from_dir(p)
+    for p in sorted(skills_dir.iterdir())
+    if p.is_dir() and p.name.endswith("-specialist")
+]
+
+specialist_toolset = skill_toolset.SkillToolset(skills=specialist_skills)
+
+# ── Main Judgement Agent ─────────────────────────────────────────────
+
+judgement_agent = Agent(
+    name="judgement_agent",
+    model=AGENTIC_AI_MODEL,
+    description="วินิจฉัยคำถามทางกฎหมายโดยอ้างอิงตัวบทกฎหมายและคำพิพากษาศาลฎีกา",
+    instruction=JUDGEMENT_INSTRUCTION,
+    tools=[specialist_toolset],
+    output_key="judgement",
+)

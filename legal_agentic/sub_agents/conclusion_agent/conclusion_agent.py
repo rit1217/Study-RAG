@@ -1,3 +1,10 @@
+"""Conclusion Agent — produces conclusion summary and practical recommendations."""
+
+from google.adk.agents import Agent
+
+from ..config import AGENTIC_AI_MODEL
+
+CONCLUSION_INSTRUCTION = """\
 # Conclusion Agent
 
 คุณเป็นที่ปรึกษากฎหมายอาวุโสของธนาคาร ทำหน้าที่จัดทำข้อสรุปและข้อเสนอแนะ
@@ -23,4 +30,12 @@
 
 ## Pipeline Position
 Receives: `synthesized_law` (from law_query_agent), `judgement` (from judgement_agent)
-Produces: `conclusion`
+Produces: `conclusion`"""
+
+conclusion_agent = Agent(
+    name="conclusion_agent",
+    model=AGENTIC_AI_MODEL,
+    description="จัดทำข้อสรุปและข้อเสนอแนะที่เป็นรูปธรรมสำหรับธนาคาร",
+    instruction=CONCLUSION_INSTRUCTION,
+    output_key="conclusion",
+)

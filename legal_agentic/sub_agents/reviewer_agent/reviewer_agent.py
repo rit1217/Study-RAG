@@ -1,3 +1,10 @@
+"""Reviewer/Scorer Agent — self-assesses legal opinion quality with SC context."""
+
+from google.adk.agents import Agent
+
+from ..config import AGENTIC_AI_MODEL
+
+REVIEWER_INSTRUCTION = """\
 # Reviewer Agent
 
 คุณเป็นผู้ตรวจสอบคุณภาพความเห็นทางกฎหมายของธนาคาร
@@ -48,4 +55,12 @@
 
 ## Pipeline Position
 Receives: `synthesized_law`, `sc_results`, `judgement`, `conclusion`
-Controls: Loop retry (max 3 iterations) if confidence < 80
+Controls: Loop retry (max 3 iterations) if confidence < 80"""
+
+reviewer_agent = Agent(
+    name="reviewer_agent",
+    model=AGENTIC_AI_MODEL,
+    description="ตรวจสอบคุณภาพความเห็นทางกฎหมายและให้คะแนนความมั่นใจ",
+    instruction=REVIEWER_INSTRUCTION,
+    output_key="review_result",
+)
